@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 using TMPro;
 
-[RequireComponent(typeof(UIDragHandler), typeof(UIHoldHandler), typeof(UIClickHandler))]
+[RequireComponent(typeof(UIDragHandler), typeof(UIClickHandler))]
+[RequireComponent(typeof(UIHoldHandler), typeof(UIHoverHandler))]
 public class TestButton : MonoBehaviour
 {
     [SerializeField] private GameObject holdPanel;
@@ -11,6 +13,7 @@ public class TestButton : MonoBehaviour
     private UIDragHandler dragHandler;
     private UIHoldHandler holdHandler;
     private UIClickHandler clickHandler;
+    private UIHoverHandler hoverHandler;
 
     private TMP_Text Title;
     private string origin;
@@ -21,6 +24,8 @@ public class TestButton : MonoBehaviour
         dragHandler = GetComponent<UIDragHandler>();
         holdHandler = GetComponent<UIHoldHandler>();
         clickHandler = GetComponent<UIClickHandler>();
+        hoverHandler = GetComponent<UIHoverHandler>();
+
 
         holdPanelInstance = null;
     }
@@ -38,6 +43,7 @@ public class TestButton : MonoBehaviour
         holdHandler.callback += OnHold;
         dragHandler.callback += OnDrag;
         clickHandler.callback += OnClick;
+        hoverHandler.callback += OnHover;
     }
 
     private void OnDisable()
@@ -45,6 +51,21 @@ public class TestButton : MonoBehaviour
         holdHandler.callback -= OnHold;
         dragHandler.callback -= OnDrag;
         clickHandler.callback -= OnClick;
+        hoverHandler.callback -= OnHover;
+    }
+
+    private void OnHover(HoverType type, Vector2 point)
+    {
+        switch (type)
+        {
+        case HoverType.Begin:
+            GetComponent<Image>().color = Color.grey;
+            break;
+
+        case HoverType.End:
+            GetComponent<Image>().color = Color.white;
+            break;
+        }
     }
 
     private void OnClick(Vector2 point)
